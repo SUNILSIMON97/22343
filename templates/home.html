@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>நண்பன் AI - உங்கள் தமிழ் நண்பன்</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .home-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .logo {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .title {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 20px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .tagline {
+            font-size: 24px;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .start-button {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 20px 60px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .start-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+        
+        .features {
+            margin-top: 60px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 800px;
+        }
+        
+        .feature {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        .feature-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .feature-desc {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        @media (max-width: 768px) {
+            .title { font-size: 36px; }
+            .subtitle { font-size: 16px; }
+            .tagline { font-size: 18px; }
+            .start-button { padding: 15px 40px; font-size: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="home-container">
+        <div class="logo">👤</div>
+        <h1 class="title">நண்பன் AI</h1>
+        <p class="subtitle">உங்கள் தமிழ் நண்பன்</p>
+        
+        <div class="tagline">
+            "உங்களுக்காகவே உருவாக்கப்பட்ட ஒரு ஸ்பெஷல் தமிழ் AI நண்பன்"<br>
+            <small style="font-size: 18px; opacity: 0.8;">உங்க ஊரு பாஷையில பேசலாம்!</small>
+        </div>
+        
+        <button class="start-button" onclick="startNanban()">
+            ஆரம்பிக்கலாம் 🚀
+        </button>
+        
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🗣️</div>
+                <div class="feature-title">5 பாஷைகள்</div>
+                <div class="feature-desc">சென்னை, கோவை, மதுரை, நெல்லை, ஈழம்</div>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">🎭</div>
+                <div class="feature-title">4 பர்சனாலிட்டி</div>
+                <div class="feature-desc">ஜாலியான, அமைதியான, தெளிவான, விளக்கமான</div>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">🔊</div>
+                <div class="feature-title">Voice Support</div>
+                <div class="feature-desc">நண்பன் உங்களுக்கு பேசி பதில் சொல்வான்!</div>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">💭</div>
+                <div class="feature-title">Memory</div>
+                <div class="feature-desc">உங்க பேரை நினைவில் வைச்சுக்கும்</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function startNanban() {
+            window.location.href = '/setup';
+        }
+    </script>
+</body>
+</html>

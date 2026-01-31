@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>நண்பன் AI - Setup</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .setup-container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .setup-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .setup-title {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .setup-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .setup-section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+        }
+        
+        .option-card {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .option-card:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-5px);
+        }
+        
+        .option-card.selected {
+            border-color: #FFD700;
+            background: rgba(255, 215, 0, 0.2);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        
+        .option-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .option-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .option-desc {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .name-input-section {
+            margin-bottom: 30px;
+        }
+        
+        .name-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+        
+        .continue-button {
+            width: 100%;
+            padding: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            background: #FFD700;
+            color: #333;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .continue-button:hover {
+            background: #FFC700;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .continue-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <div class="setup-header">
+            <div class="setup-title">நண்பன் AI Setup</div>
+            <div class="setup-subtitle">உங்க விருப்பத்தை தேர்ந்தெடுக்கவும்</div>
+        </div>
+        
+        <!-- Name Input -->
+        <div class="name-input-section">
+            <div class="section-title">
+                <span>👤</span>
+                <span>உங்க பேரு என்ன?</span>
+            </div>
+            <input type="text" 
+                   class="name-input" 
+                   id="userName" 
+                   placeholder="உங்க பேரை சொல்லுங்க..."
+                   value="">
+        </div>
+        
+        <!-- Slang Selection -->
+        <div class="setup-section">
+            <div class="section-title">
+                <span>🗺️</span>
+                <span>எந்த பாஷையில் பேசுவோம்?</span>
+            </div>
+            <div class="options-grid">
+                <div class="option-card selected" data-slang="COMMON" onclick="selectSlang('COMMON')">
+                    <div class="option-icon">🌍</div>
+                    <div class="option-name">பொதுவான தமிழ்</div>
+                    <div class="option-desc">எல்லாருக்கும் புரியும்</div>
+                </div>
+                
+                <div class="option-card" data-slang="CHENNAI" onclick="selectSlang('CHENNAI')">
+                    <div class="option-icon">🚉</div>
+                    <div class="option-name">சென்னை</div>
+                    <div class="option-desc">Machi, Gethu!</div>
+                </div>
+                
+                <div class="option-card" data-slang="KOVAI" onclick="selectSlang('KOVAI')">
+                    <div class="option-icon">🌄</div>
+                    <div class="option-name">கோவை</div>
+                    <div class="option-desc">சாமி, வாங்க!</div>
+                </div>
+                
+                <div class="option-card" data-slang="MADURAI" onclick="selectSlang('MADURAI')">
+                    <div class="option-icon">🛕</div>
+                    <div class="option-name">மதுரை</div>
+                    <div class="option-desc">அண்ணே, சொல்லு!</div>
+                </div>
+                
+                <div class="option-card" data-slang="NELLAI" onclick="selectSlang('NELLAI')">
+                    <div class="option-icon">🍬</div>
+                    <div class="option-name">நெல்லை</div>
+                    <div class="option-desc">ஏலே, கேளு!</div>
+                </div>
+                
+                <div class="option-card" data-slang="EELAM" onclick="selectSlang('EELAM')">
+                    <div class="option-icon">🌴</div>
+                    <div class="option-name">ஈழம்</div>
+                    <div class="option-desc">என்னப்பா, சுகமா?</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Persona Selection -->
+        <div class="setup-section">
+            <div class="section-title">
+                <span>🎭</span>
+                <span>நண்பன் எப்படி இருக்கணும்?</span>
+            </div>
+            <div class="options-grid">
+                <div class="option-card selected" data-persona="JALIANA" onclick="selectPersona('JALIANA')">
+                    <div class="option-icon">😄</div>
+                    <div class="option-name">ஜாலியான</div>
+                    <div class="option-desc">செம்ம எனர்ஜியா!</div>
+                </div>
+                
+                <div class="option-card" data-persona="AMAITHIYANA" onclick="selectPersona('AMAITHIYANA')">
+                    <div class="option-icon">😌</div>
+                    <div class="option-name">அமைதியான</div>
+                    <div class="option-desc">சாந்தமா பேசும்</div>
+                </div>
+                
+                <div class="option-card" data-persona="THELIVANA" onclick="selectPersona('THELIVANA')">
+                    <div class="option-icon">🎯</div>
+                    <div class="option-name">தெளிவான</div>
+                    <div class="option-desc">நேரடியான பதில்</div>
+                </div>
+                
+                <div class="option-card" data-persona="VILAKKAMAANA" onclick="selectPersona('VILAKKAMAANA')">
+                    <div class="option-icon">📚</div>
+                    <div class="option-name">விளக்கமான</div>
+                    <div class="option-desc">டீச்சர் மாதிரி</div>
+                </div>
+            </div>
+        </div>
+        
+        <button class="continue-button" onclick="saveAndContinue()">
+            சரி, பேசலாம் வா! 💬
+        </button>
+    </div>
+    
+    <script>
+        let selectedSlang = 'COMMON';
+        let selectedPersona = 'JALIANA';
+        
+        function selectSlang(slang) {
+            selectedSlang = slang;
+            
+            // Remove selected class from all
+            document.querySelectorAll('[data-slang]').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked
+            document.querySelector(`[data-slang="${slang}"]`).classList.add('selected');
+        }
+        
+        function selectPersona(persona) {
+            selectedPersona = persona;
+            
+            // Remove selected class from all
+            document.querySelectorAll('[data-persona]').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked
+            document.querySelector(`[data-persona="${persona}"]`).classList.add('selected');
+        }
+        
+        async function saveAndContinue() {
+            const userName = document.getElementById('userName').value.trim();
+            
+            // Save preferences
+            try {
+                const response = await fetch('/api/save-preferences', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: userName,
+                        slang: selectedSlang,
+                        persona: selectedPersona,
+                        voice_enabled: true
+                    })
+                });
+                
+                if (response.ok) {
+                    // Redirect to chat
+                    window.location.href = '/chat';
+                } else {
+                    alert('Error saving preferences. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Connection error. Please check your internet and try again.');
+            }
+        }
+    </script>
+</body>
+</html>

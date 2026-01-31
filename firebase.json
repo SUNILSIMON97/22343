@@ -1,0 +1,13 @@
+{
+  "hosting": {
+    "rewrites": [
+      {
+        "source": "**",
+        "run": {
+          "serviceId": "nanban-api",
+          "region": "us-central1"
+        }
+      }
+    ]
+  }
+}
