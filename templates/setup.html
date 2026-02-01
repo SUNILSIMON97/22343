@@ -7,128 +7,149 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile.css') }}">
     <style>
+        :root {
+            --bg-0: #050505;
+            --bg-1: #0f0f0f;
+            --gold: #c7a661;
+            --gold-soft: rgba(199, 166, 97, 0.18);
+            --text-1: #f2f2f2;
+            --text-2: #b8b8b8;
+        }
+
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: radial-gradient(1200px 600px at 50% -200px, #1c1c1c 0%, #0b0b0b 40%, #050505 100%);
             min-height: 100vh;
-            color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-1);
+            font-family: "Noto Sans Tamil", "Poppins", "Segoe UI", sans-serif;
         }
-        
+
         .setup-container {
-            max-width: 600px;
+            max-width: 680px;
             margin: 40px auto;
-            padding: 30px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            padding: 26px;
+            background: #0f0f0f;
             border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.06);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.45);
         }
-        
+
         .setup-header {
-            text-align: center;
-            margin-bottom: 40px;
+            text-align: left;
+            margin-bottom: 20px;
         }
-        
+
         .setup-title {
-            font-size: 32px;
-            font-weight: bold;
-            margin-bottom: 10px;
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 6px;
         }
-        
+
         .setup-subtitle {
-            font-size: 16px;
-            opacity: 0.9;
+            font-size: 14px;
+            color: var(--text-2);
         }
-        
+
         .setup-section {
-            margin-bottom: 40px;
+            margin-bottom: 26px;
         }
-        
+
         .section-title {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        
+
         .options-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
         }
-        
+
         .option-card {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 20px;
-            border-radius: 15px;
+            background: #121212;
+            padding: 18px;
+            border-radius: 16px;
             cursor: pointer;
-            border: 3px solid transparent;
-            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.06);
+            transition: all 0.2s ease;
             text-align: center;
+            min-height: 110px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
-        
+
         .option-card:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-5px);
+            transform: translateY(-2px);
+            border-color: rgba(199, 166, 97, 0.45);
         }
-        
+
         .option-card.selected {
-            border-color: #FFD700;
-            background: rgba(255, 215, 0, 0.2);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            border-color: var(--gold);
+            background: linear-gradient(180deg, rgba(199,166,97,0.18), rgba(199,166,97,0.04));
+            box-shadow: inset 0 0 0 1px rgba(199,166,97,0.35);
         }
-        
+
         .option-icon {
-            font-size: 32px;
-            margin-bottom: 10px;
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: var(--gold);
         }
-        
+
+        .option-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--gold);
+            fill: none;
+            stroke-width: 1.6;
+        }
+
         .option-name {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 4px;
         }
-        
+
         .option-desc {
-            font-size: 12px;
-            opacity: 0.8;
+            font-size: 11px;
+            color: var(--text-2);
         }
-        
+
         .name-input-section {
-            margin-bottom: 30px;
+            margin-bottom: 22px;
         }
-        
+
         .name-input {
             width: 100%;
-            padding: 15px;
-            font-size: 18px;
-            border: none;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.9);
-            color: #333;
+            padding: 12px 14px;
+            font-size: 14px;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            background: #121212;
+            color: var(--text-1);
         }
-        
+
         .continue-button {
             width: 100%;
-            padding: 20px;
-            font-size: 20px;
-            font-weight: bold;
-            background: #FFD700;
-            color: #333;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            background: linear-gradient(180deg, #d0b36f, #b8944c);
+            color: #0b0b0b;
             border: none;
-            border-radius: 15px;
+            border-radius: 999px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
-        
+
         .continue-button:hover {
-            background: #FFC700;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(199, 166, 97, 0.35);
         }
-        
+
         .continue-button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
@@ -138,8 +159,8 @@
 <body>
     <div class="setup-container">
         <div class="setup-header">
-            <div class="setup-title">நண்பன் AI Setup</div>
-            <div class="setup-subtitle">உங்க விருப்பத்தை தேர்ந்தெடுக்கவும்</div>
+            <div class="setup-title">எந்த மாதிரி நண்பன்?</div>
+            <div class="setup-subtitle">உன் vibe‑க்கு செட் ஆகுற மாதிரி பண்ணிக்கலாம்.</div>
         </div>
         
         <!-- Name Input -->
@@ -163,37 +184,68 @@
             </div>
             <div class="options-grid">
                 <div class="option-card selected" data-slang="COMMON" onclick="selectSlang('COMMON')">
-                    <div class="option-icon">🌍</div>
+                    <div class="option-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="8"></circle>
+                            <path d="M4 12h16M12 4c2.5 3 2.5 13 0 16M12 4c-2.5 3-2.5 13 0 16"></path>
+                        </svg>
+                    </div>
                     <div class="option-name">பொதுவான தமிழ்</div>
                     <div class="option-desc">எல்லாருக்கும் புரியும்</div>
                 </div>
                 
                 <div class="option-card" data-slang="CHENNAI" onclick="selectSlang('CHENNAI')">
-                    <div class="option-icon">🚉</div>
+                    <div class="option-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="5" y="6" width="14" height="10" rx="2"></rect>
+                            <path d="M7 16l-2 3M17 16l2 3M8 10h2M14 10h2"></path>
+                        </svg>
+                    </div>
                     <div class="option-name">சென்னை</div>
                     <div class="option-desc">Machi, Gethu!</div>
                 </div>
                 
                 <div class="option-card" data-slang="KOVAI" onclick="selectSlang('KOVAI')">
-                    <div class="option-icon">🌄</div>
+                    <div class="option-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M3 18l6-7 4 5 3-3 5 5H3z"></path>
+                            <circle cx="8" cy="8" r="2"></circle>
+                        </svg>
+                    </div>
                     <div class="option-name">கோவை</div>
                     <div class="option-desc">சாமி, வாங்க!</div>
                 </div>
                 
                 <div class="option-card" data-slang="MADURAI" onclick="selectSlang('MADURAI')">
-                    <div class="option-icon">🛕</div>
+                    <div class="option-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M6 18h12M7 18V10l5-3 5 3v8M9 12h6"></path>
+                        </svg>
+                    </div>
                     <div class="option-name">மதுரை</div>
                     <div class="option-desc">அண்ணே, சொல்லு!</div>
                 </div>
                 
                 <div class="option-card" data-slang="NELLAI" onclick="selectSlang('NELLAI')">
-                    <div class="option-icon">🍬</div>
+                    <div class="option-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="4"></circle>
+                            <path d="M5 10l-2 2 2 2M19 10l2 2-2 2"></path>
+                        </svg>
+                    </div>
                     <div class="option-name">நெல்லை</div>
                     <div class="option-desc">ஏலே, கேளு!</div>
                 </div>
                 
                 <div class="option-card" data-slang="EELAM" onclick="selectSlang('EELAM')">
-                    <div class="option-icon">🌴</div>
+                    <div class="option-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 6c2-2 5-3 8-2-2 2-4 3-7 3"></path>
+                            <path d="M12 6c-2-2-5-3-8-2 2 2 4 3 7 3"></path>
+                            <path d="M12 6v12"></path>
+                            <path d="M9 18h6"></path>
+                        </svg>
+                    </div>
                     <div class="option-name">ஈழம்</div>
                     <div class="option-desc">என்னப்பா, சுகமா?</div>
                 </div>
@@ -208,25 +260,45 @@
             </div>
             <div class="options-grid">
                 <div class="option-card selected" data-persona="JALIANA" onclick="selectPersona('JALIANA')">
-                    <div class="option-icon">😄</div>
+                    <div class="option-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="8"></circle>
+                            <path d="M9 10h.01M15 10h.01M8.5 14c1.2 1.2 2.6 1.8 3.5 1.8 0.9 0 2.3-0.6 3.5-1.8"></path>
+                        </svg>
+                    </div>
                     <div class="option-name">ஜாலியான</div>
                     <div class="option-desc">செம்ம எனர்ஜியா!</div>
                 </div>
                 
                 <div class="option-card" data-persona="AMAITHIYANA" onclick="selectPersona('AMAITHIYANA')">
-                    <div class="option-icon">😌</div>
+                    <div class="option-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="8"></circle>
+                            <path d="M9 11h.01M15 11h.01M9 15c1.5 1 4.5 1 6 0"></path>
+                        </svg>
+                    </div>
                     <div class="option-name">அமைதியான</div>
                     <div class="option-desc">சாந்தமா பேசும்</div>
                 </div>
                 
                 <div class="option-card" data-persona="THELIVANA" onclick="selectPersona('THELIVANA')">
-                    <div class="option-icon">🎯</div>
+                    <div class="option-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="7"></circle>
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M12 3v2M12 19v2M3 12h2M19 12h2"></path>
+                        </svg>
+                    </div>
                     <div class="option-name">தெளிவான</div>
                     <div class="option-desc">நேரடியான பதில்</div>
                 </div>
                 
                 <div class="option-card" data-persona="VILAKKAMAANA" onclick="selectPersona('VILAKKAMAANA')">
-                    <div class="option-icon">📚</div>
+                    <div class="option-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M5 6h6v12H5zM13 6h6v12h-6z"></path>
+                        </svg>
+                    </div>
                     <div class="option-name">விளக்கமான</div>
                     <div class="option-desc">டீச்சர் மாதிரி</div>
                 </div>
@@ -234,7 +306,7 @@
         </div>
         
         <button class="continue-button" onclick="saveAndContinue()">
-            சரி, பேசலாம் வா! 💬
+            நண்பனை உருவாக்கு ✦
         </button>
     </div>
     
@@ -280,7 +352,7 @@
                         name: userName,
                         slang: selectedSlang,
                         persona: selectedPersona,
-                        voice_enabled: true
+                        voice_enabled: false
                     })
                 });
                 

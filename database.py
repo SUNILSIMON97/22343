@@ -60,6 +60,32 @@ class Database:
                 FOREIGN KEY (user_id) REFERENCES users (id)
             )
         ''')
+
+        # User memory table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS user_memory (
+                user_id INTEGER PRIMARY KEY,
+                consent BOOLEAN DEFAULT 0,
+                facts TEXT,
+                mood TEXT,
+                reply_mode TEXT,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users (id)
+            )
+        ''')
+
+        # Daily check-ins table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS user_checkins (
+                user_id INTEGER,
+                day TEXT,
+                mood TEXT,
+                note TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (user_id, day),
+                FOREIGN KEY (user_id) REFERENCES users (id)
+            )
+        ''')
         
         conn.commit()
         conn.close()
@@ -215,6 +241,109 @@ class Database:
             }
         
         return None
+
+    def get_memory(self, user_id):
+        """Get user memory settings"""
+        if not user_id:
+            return {
+                'consent': None,
+                'facts': '',
+                'mood': 'CHILL',
+                'reply_mode': 'quick'
+            }
+
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT consent, facts, mood, reply_mode
+            FROM user_memory
+            WHERE user_id = ?
+        ''', (user_id,))
+        row = cursor.fetchone()
+        conn.close()
+
+        if not row:
+            return {
+                'consent': None,
+                'facts': '',
+                'mood': 'CHILL',
+                'reply_mode': 'quick'
+            }
+
+        return {
+            'consent': bool(row['consent']) if row['consent'] is not None else None,
+            'facts': row['facts'] or '',
+            'mood': row['mood'] or 'CHILL',
+            'reply_mode': row['reply_mode'] or 'quick'
+        }
+
+    def set_memory(self, user_id, consent=None, facts=None, mood=None, reply_mode=None):
+        """Upsert user memory settings"""
+        if not user_id:
+            return
+
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO user_memory (user_id, consent, facts, mood, reply_mode)
+            VALUES (?, ?, ?, ?, ?)
+            ON CONFLICT(user_id) DO UPDATE SET
+                consent=excluded.consent,
+                facts=excluded.facts,
+                mood=excluded.mood,
+                reply_mode=excluded.reply_mode,
+                updated_at=CURRENT_TIMESTAMP
+        ''', (user_id, consent, facts, mood, reply_mode))
+        conn.commit()
+        conn.close()
+
+    def clear_memory(self, user_id):
+        """Clear user memory settings"""
+        if not user_id:
+            return
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute('DELETE FROM user_memory WHERE user_id = ?', (user_id,))
+        conn.commit()
+        conn.close()
+
+    def get_checkin(self, user_id, day):
+        """Get daily check-in for a user and day (YYYY-MM-DD)"""
+        if not user_id:
+            return None
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT mood, note, created_at
+            FROM user_checkins
+            WHERE user_id = ? AND day = ?
+        ''', (user_id, day))
+        row = cursor.fetchone()
+        conn.close()
+        if not row:
+            return None
+        return {
+            'mood': row['mood'],
+            'note': row['note'],
+            'created_at': row['created_at']
+        }
+
+    def upsert_checkin(self, user_id, day, mood, note):
+        """Upsert daily check-in"""
+        if not user_id:
+            return
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO user_checkins (user_id, day, mood, note)
+            VALUES (?, ?, ?, ?)
+            ON CONFLICT(user_id, day) DO UPDATE SET
+                mood=excluded.mood,
+                note=excluded.note,
+                created_at=CURRENT_TIMESTAMP
+        ''', (user_id, day, mood, note))
+        conn.commit()
+        conn.close()
     
     def get_all_users_count(self):
         """Get total number of users"""

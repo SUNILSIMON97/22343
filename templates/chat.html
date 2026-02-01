@@ -7,10 +7,21 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile.css') }}">
     <style>
+        :root {
+            --bg-0: #050505;
+            --bg-1: #0f0f0f;
+            --gold: #c7a661;
+            --gold-soft: rgba(199, 166, 97, 0.18);
+            --text-1: #f2f2f2;
+            --text-2: #b8b8b8;
+            --bubble: #121212;
+        }
+
         body {
             margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
+            font-family: "Noto Sans Tamil", "Poppins", "Segoe UI", sans-serif;
+            background: radial-gradient(1200px 600px at 50% -200px, #1c1c1c 0%, #0b0b0b 40%, #050505 100%);
+            color: var(--text-1);
         }
         
         .chat-container {
@@ -20,13 +31,14 @@
         }
         
         .chat-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 20px;
+            background: #0b0b0b;
+            color: var(--text-1);
+            padding: 16px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            border-bottom: 1px solid rgba(199, 166, 97, 0.35);
+            box-shadow: 0 1px 0 rgba(199, 166, 97, 0.2);
         }
         
         .header-left {
@@ -36,14 +48,16 @@
         }
         
         .nanban-avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.2);
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: linear-gradient(145deg, #1a1a1a, #101010);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 22px;
+            color: var(--gold);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
         }
         
         .nanban-info h2 {
@@ -53,7 +67,7 @@
         
         .nanban-status {
             font-size: 12px;
-            opacity: 0.8;
+            color: var(--text-2);
         }
         
         .header-actions {
@@ -62,26 +76,30 @@
         }
         
         .icon-button {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
+            background: #121212;
+            border: 1px solid rgba(255,255,255,0.08);
+            color: var(--text-1);
             width: 40px;
             height: 40px;
-            border-radius: 50%;
+            border-radius: 12px;
             cursor: pointer;
             font-size: 18px;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        
+
         .icon-button:hover {
-            background: rgba(255,255,255,0.3);
+            border-color: rgba(199, 166, 97, 0.45);
+            color: var(--gold);
         }
         
         .messages-container {
             flex: 1;
             overflow-y: auto;
             padding: 20px;
-            background: #f5f5f5;
+            background: transparent;
         }
         
         .message {
@@ -108,18 +126,19 @@
         .message-bubble {
             max-width: 70%;
             padding: 12px 18px;
-            border-radius: 18px;
+            border-radius: 16px;
             position: relative;
         }
         
         .message.nanban .message-bubble {
-            background: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background: var(--bubble);
+            border: 1px solid rgba(255,255,255,0.06);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.35);
         }
         
         .message.user .message-bubble {
-            background: #667eea;
-            color: white;
+            background: linear-gradient(180deg, #d0b36f, #b8944c);
+            color: #0b0b0b;
         }
         
         .message-text {
@@ -136,12 +155,12 @@
         }
         
         .play-button {
-            background: #667eea;
-            color: white;
+            background: #121212;
+            color: var(--gold);
             border: none;
             width: 30px;
             height: 30px;
-            border-radius: 50%;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 12px;
         }
@@ -149,9 +168,10 @@
         .typing-indicator {
             display: none;
             padding: 12px 18px;
-            background: white;
-            border-radius: 18px;
+            background: var(--bubble);
+            border-radius: 16px;
             width: fit-content;
+            border: 1px solid rgba(255,255,255,0.06);
         }
         
         .typing-indicator.active {
@@ -162,7 +182,7 @@
         .dot {
             width: 8px;
             height: 8px;
-            background: #667eea;
+            background: var(--gold);
             border-radius: 50%;
             animation: bounce 1.4s infinite ease-in-out;
         }
@@ -176,49 +196,117 @@
         }
         
         .input-container {
-            background: white;
+            background: #0b0b0b;
             padding: 15px 20px;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            border-top: 1px solid rgba(255,255,255,0.06);
             display: flex;
             gap: 10px;
             align-items: center;
+        }
+
+        .toggle-button {
+            padding: 6px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: #121212;
+            color: var(--text-1);
+            cursor: pointer;
+        }
+
+
+        .suggestions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .suggestion-btn {
+            background: #121212;
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 6px 10px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 12px;
+            color: var(--text-1);
+        }
+
+        .checkin-bar {
+            background: #0b0b0b;
+            border-bottom: 1px solid rgba(199, 166, 97, 0.25);
+            padding: 12px 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .checkin-text {
+            font-size: 13px;
+            color: var(--text-2);
+        }
+
+        .mood-chip {
+            background: #121212;
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 6px 10px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-size: 12px;
+            color: var(--text-1);
+        }
+
+        .checkin-note {
+            flex: 1;
+            min-width: 160px;
+            padding: 6px 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: #121212;
+            color: var(--text-1);
+            font-size: 12px;
         }
         
         .message-input {
             flex: 1;
             padding: 12px 18px;
-            border: 2px solid #e0e0e0;
-            border-radius: 25px;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 999px;
             font-size: 16px;
             outline: none;
-            transition: border-color 0.3s ease;
+            background: #121212;
+            color: var(--text-1);
+            transition: border-color 0.2s ease;
         }
         
         .message-input:focus {
-            border-color: #667eea;
+            border-color: rgba(199, 166, 97, 0.55);
         }
         
         .send-button {
-            background: #667eea;
-            color: white;
+            background: linear-gradient(180deg, #d0b36f, #b8944c);
+            color: #0b0b0b;
             border: none;
             width: 45px;
             height: 45px;
-            border-radius: 50%;
+            border-radius: 12px;
             cursor: pointer;
             font-size: 20px;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .send-button:hover {
-            background: #5568d3;
-            transform: scale(1.1);
+            transform: translateY(-1px);
         }
         
         .send-button:disabled {
-            background: #ccc;
+            background: #333;
+            color: #777;
             cursor: not-allowed;
-            transform: scale(1);
+            transform: none;
         }
         
         @media (max-width: 768px) {
@@ -233,31 +321,59 @@
         <!-- Header -->
         <div class="chat-header">
             <div class="header-left">
-                <div class="nanban-avatar">👤</div>
+                <div class="nanban-avatar" aria-hidden="true">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2.5l1.6 4.2 4.2 1.6-4.2 1.6-1.6 4.2-1.6-4.2-4.2-1.6 4.2-1.6L12 2.5z" stroke="#c7a661" stroke-width="1.6" fill="none"/>
+                    </svg>
+                </div>
                 <div class="nanban-info">
                     <h2>நண்பன் AI</h2>
-                    <div class="nanban-status" id="statusText">{{ slang }} • {{ persona }}</div>
+                    <div class="nanban-status" id="statusText">ஆன்லைன் • {{ slang }} • {{ persona }}</div>
                 </div>
             </div>
             <div class="header-actions">
-                <button class="icon-button" onclick="toggleVoice()" id="voiceToggle" title="Toggle Voice">
-                    🔊
+                <button class="icon-button" onclick="toggleVoice()" id="voiceToggle" title="Toggle Voice" aria-label="Toggle Voice">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="#c7a661" fill="none" stroke-width="1.7">
+                        <path d="M4 9h4l5-4v14l-5-4H4z"></path>
+                        <path d="M16 8c1.5 1.5 1.5 6 0 7.5"></path>
+                        <path d="M18.5 6c2.5 2.5 2.5 10 0 12.5"></path>
+                    </svg>
                 </button>
-                <button class="icon-button" onclick="clearChat()" title="Clear Chat">
-                    🗑️
+                <button class="icon-button" onclick="clearChat()" title="Clear Chat" aria-label="Clear Chat">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="#c7a661" fill="none" stroke-width="1.7">
+                        <path d="M4 7h16"></path>
+                        <path d="M9 7V5h6v2"></path>
+                        <path d="M7 7l1 12h8l1-12"></path>
+                    </svg>
                 </button>
-                <button class="icon-button" onclick="goToSettings()" title="Settings">
-                    ⚙️
+                <button class="icon-button" onclick="goToSettings()" title="Settings" aria-label="Settings">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="#c7a661" fill="none" stroke-width="1.7">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3-2.2 1a7 7 0 0 0-1.7-1l-.3-2.4h-3.5l-.3 2.4a7 7 0 0 0-1.7 1l-2.2-1-2 3 2 1.5a7 7 0 0 0 0 2L3.7 14l2 3 2.2-1a7 7 0 0 0 1.7 1l.3 2.4h3.5l.3-2.4a7 7 0 0 0 1.7-1l2.2 1 2-3-2-1.5c.1-.3.1-.6.1-1z"></path>
+                    </svg>
                 </button>
             </div>
         </div>
+
+
+        <!-- Daily check-in -->
+        <div class="checkin-bar" id="checkinBar" style="display:none;">
+            <span class="checkin-text" id="checkinText">இன்னைக்கு நாள் எப்படி போச்சு?</span>
+            <button class="mood-chip" onclick="sendCheckin('நல்லா')">நல்லா</button>
+            <button class="mood-chip" onclick="sendCheckin('சரி')">சரி</button>
+            <button class="mood-chip" onclick="sendCheckin('மோசம்')">மோசம்</button>
+            <input class="checkin-note" id="checkinNote" placeholder="ஒரு வரியில் சொல்லு...">
+        </div>
+
+        <!-- Controls -->
+        <div style="padding: 10px 20px; background: #0b0b0b; border-bottom: 1px solid rgba(255,255,255,0.06);"></div>
         
         <!-- Messages -->
         <div class="messages-container" id="messagesContainer">
             <!-- Welcome message -->
             <div class="message nanban">
                 <div class="message-bubble">
-                    <div class="message-text" id="welcomeMessage">வணக்கம்! நான் உங்க நண்பன். எப்படி உதவலாம்? 😊</div>
+                    <div class="message-text" id="welcomeMessage">வணக்கம்! நான் இங்க தான் இருக்கேன். எப்படி உதவலாம்? 😊</div>
                 </div>
             </div>
             
@@ -266,6 +382,7 @@
                 <div class="dot"></div>
                 <div class="dot"></div>
                 <div class="dot"></div>
+                <span style="margin-left:8px; font-size:12px; color:#b8b8b8;">நண்பன் எழுதிக்கிட்டு இருக்கான்…</span>
             </div>
         </div>
         
@@ -279,8 +396,12 @@
                 style="display: none;"
                 onchange="handleImageUpload(event)"
             />
-            <button class="icon-button" onclick="document.getElementById('imageInput').click()" title="Upload Image">
-                📷
+            <button class="icon-button" onclick="document.getElementById('imageInput').click()" title="Upload Image" aria-label="Upload Image">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="#c7a661" fill="none" stroke-width="1.7">
+                    <rect x="4" y="7" width="16" height="12" rx="2"></rect>
+                    <circle cx="12" cy="13" r="3"></circle>
+                    <path d="M8 7l1.5-2h5L16 7"></path>
+                </svg>
             </button>
             <input 
                 type="text" 
@@ -289,20 +410,30 @@
                 placeholder="உங்க message எழுதுங்க..."
                 onkeypress="handleKeyPress(event)"
             />
-            <button class="send-button" id="sendButton" onclick="sendMessage()">
-                ➤
+            <button class="send-button" id="sendButton" onclick="sendMessage()" aria-label="Send">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="#0b0b0b" fill="none" stroke-width="2">
+                    <path d="M4 12l16-7-4 14-4-5-8-2z"></path>
+                </svg>
             </button>
         </div>
-        <div id="imagePreview" style="display: none; padding: 10px 20px; background: #fff;">
+        <div id="imagePreview" style="display: none; padding: 10px 20px; background: #0b0b0b;">
             <img id="previewImg" style="max-width: 200px; max-height: 200px; border-radius: 10px;">
-            <button class="icon-button" onclick="removeImage()" title="Remove Image">❌</button>
+            <button class="icon-button" onclick="removeImage()" title="Remove Image" aria-label="Remove Image">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="#c7a661" fill="none" stroke-width="2">
+                    <path d="M6 6l12 12M18 6l-12 12"></path>
+                </svg>
+            </button>
         </div>
     </div>
     
     <script>
-        let voiceEnabled = true;
+        let voiceEnabled = false;
         let currentAudio = null;
         let uploadedImageData = null;
+        let uploadedImageMime = null;
+        let memoryConsent = null;
+        let currentMood = 'CHILL';
+        let replyMode = 'quick';
         
         // Auto-scroll to bottom
         function scrollToBottom() {
@@ -332,7 +463,58 @@
                     ${audioHTML}
                 </div>
             `;
+
+            if (!isUser) {
+                const chips = document.createElement('div');
+                chips.className = 'suggestions';
+                ['சரி', 'இன்னும் சொல்லு', 'கொஞ்சம் விளக்கு', 'ரொம்ப சிக்கல்'].forEach((s) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'suggestion-btn';
+                    btn.textContent = s;
+                    btn.addEventListener('click', () => {
+                        const input = document.getElementById('messageInput');
+                        input.value = s;
+                        sendMessage();
+                    });
+                    chips.appendChild(btn);
+                });
+                messageDiv.querySelector('.message-bubble').appendChild(chips);
+            }
             
+            container.insertBefore(messageDiv, document.getElementById('typingIndicator'));
+            scrollToBottom();
+        }
+
+        function addSuggestions(suggestions) {
+            const container = document.getElementById('messagesContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message nanban';
+
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble';
+
+            const text = document.createElement('div');
+            text.className = 'message-text';
+            text.textContent = 'Nanban busy... Try these?';
+
+            const suggestionsDiv = document.createElement('div');
+            suggestionsDiv.className = 'suggestions';
+
+            suggestions.forEach((s) => {
+                const btn = document.createElement('button');
+                btn.className = 'suggestion-btn';
+                btn.textContent = s;
+                btn.addEventListener('click', () => {
+                    const input = document.getElementById('messageInput');
+                    input.value = s;
+                    sendMessage();
+                });
+                suggestionsDiv.appendChild(btn);
+            });
+
+            bubble.appendChild(text);
+            bubble.appendChild(suggestionsDiv);
+            messageDiv.appendChild(bubble);
             container.insertBefore(messageDiv, document.getElementById('typingIndicator'));
             scrollToBottom();
         }
@@ -364,6 +546,7 @@
                 document.getElementById('previewImg').src = e.target.result;
                 document.getElementById('imagePreview').style.display = 'flex';
                 uploadedImageData = e.target.result.split(',')[1];
+                uploadedImageMime = file.type || 'image/jpeg';
             };
             reader.readAsDataURL(file);
         }
@@ -371,6 +554,7 @@
         function removeImage() {
             document.getElementById('imagePreview').style.display = 'none';
             uploadedImageData = null;
+            uploadedImageMime = null;
             document.getElementById('imageInput').value = '';
         }
 
@@ -402,7 +586,10 @@
                     },
                     body: JSON.stringify({
                         message: message,
-                        image_data: uploadedImageData
+                        image_data: uploadedImageData,
+                        image_mime: uploadedImageMime,
+                        mood: currentMood,
+                        reply_mode: replyMode
                     })
                 });
                 
@@ -414,6 +601,10 @@
                 if (data.success) {
                     // Add AI response
                     addMessage(data.response, false, data.audio_url);
+
+                    if (data.suggestions && data.suggestions.length) {
+                        addSuggestions(data.suggestions);
+                    }
                     
                     // Auto-play voice if enabled
                     if (voiceEnabled && data.audio_url) {
@@ -443,12 +634,85 @@
         }
         
         // Toggle voice
+        function setVoiceIcon() {
+            const button = document.getElementById('voiceToggle');
+            if (voiceEnabled) {
+                button.innerHTML = `
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="#c7a661" fill="none" stroke-width="1.7">
+                        <path d="M4 9h4l5-4v14l-5-4H4z"></path>
+                        <path d="M16 8c1.5 1.5 1.5 6 0 7.5"></path>
+                        <path d="M18.5 6c2.5 2.5 2.5 10 0 12.5"></path>
+                    </svg>
+                `;
+            } else {
+                button.innerHTML = `
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="#c7a661" fill="none" stroke-width="1.7">
+                        <path d="M4 9h4l5-4v14l-5-4H4z"></path>
+                        <path d="M19 5l-6 6"></path>
+                        <path d="M13 11l6 6"></path>
+                    </svg>
+                `;
+            }
+        }
+
         function toggleVoice() {
             voiceEnabled = !voiceEnabled;
-            const button = document.getElementById('voiceToggle');
-            button.textContent = voiceEnabled ? '🔊' : '🔇';
+            setVoiceIcon();
         }
-        
+
+        async function loadMemoryStatus() {
+            try {
+                const res = await fetch('/api/memory/status');
+                const data = await res.json();
+                memoryConsent = data.consent;
+                currentMood = data.mood || 'CHILL';
+                replyMode = data.reply_mode || 'quick';
+            } catch (e) {
+                console.error('Memory status error', e);
+            }
+        }
+
+        async function loadCheckinStatus() {
+            try {
+                const res = await fetch('/api/checkin/status');
+                const data = await res.json();
+                if (!data.done) {
+                    const hour = new Date().getHours();
+                    if (hour >= 19) {
+                        document.getElementById('checkinText').textContent = 'இன்னைக்கு நல்ல விஷயம் ஒன்னு சொல்லு?';
+                    }
+                    document.getElementById('checkinBar').style.display = 'flex';
+                }
+            } catch (e) {
+                console.error('Checkin status error', e);
+            }
+        }
+
+        async function sendCheckin(mood) {
+            const note = document.getElementById('checkinNote').value.trim();
+            await fetch('/api/checkin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ mood: mood, note: note })
+            });
+            document.getElementById('checkinBar').style.display = 'none';
+            addMessage(`சூப்பர், இன்று mood: ${mood}.`, false);
+        }
+
+        async function persistMemoryPrefs() {
+            if (memoryConsent === null) return;
+            await fetch('/api/memory/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    consent: memoryConsent,
+                    facts: '',
+                    mood: currentMood,
+                    reply_mode: replyMode
+                })
+            });
+        }
+
         // Clear chat
         async function clearChat() {
             if (!confirm('Clear all messages?')) return;
@@ -490,6 +754,9 @@
         // Focus input on load
         window.onload = () => {
             document.getElementById('messageInput').focus();
+            setVoiceIcon();
+            loadMemoryStatus();
+            loadCheckinStatus();
         };
     </script>
 </body>
