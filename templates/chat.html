@@ -2,9 +2,10 @@
 <html lang="ta">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>நண்பன் AI - Chat</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile.css') }}">
     <style>
         body {
             margin: 0;
@@ -270,6 +271,17 @@
         
         <!-- Input -->
         <div class="input-container">
+            <input
+                type="file"
+                id="imageInput"
+                accept="image/*"
+                capture="environment"
+                style="display: none;"
+                onchange="handleImageUpload(event)"
+            />
+            <button class="icon-button" onclick="document.getElementById('imageInput').click()" title="Upload Image">
+                📷
+            </button>
             <input 
                 type="text" 
                 class="message-input" 
@@ -281,11 +293,16 @@
                 ➤
             </button>
         </div>
+        <div id="imagePreview" style="display: none; padding: 10px 20px; background: #fff;">
+            <img id="previewImg" style="max-width: 200px; max-height: 200px; border-radius: 10px;">
+            <button class="icon-button" onclick="removeImage()" title="Remove Image">❌</button>
+        </div>
     </div>
     
     <script>
         let voiceEnabled = true;
         let currentAudio = null;
+        let uploadedImageData = null;
         
         // Auto-scroll to bottom
         function scrollToBottom() {
@@ -338,18 +355,39 @@
         }
         
         // Send message
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImg').src = e.target.result;
+                document.getElementById('imagePreview').style.display = 'flex';
+                uploadedImageData = e.target.result.split(',')[1];
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeImage() {
+            document.getElementById('imagePreview').style.display = 'none';
+            uploadedImageData = null;
+            document.getElementById('imageInput').value = '';
+        }
+
         async function sendMessage() {
             const input = document.getElementById('messageInput');
             const message = input.value.trim();
             
-            if (!message) return;
+            if (!message && !uploadedImageData) return;
             
             // Disable input while sending
             input.disabled = true;
             document.getElementById('sendButton').disabled = true;
             
             // Add user message to chat
-            addMessage(message, true);
+            if (message) {
+                addMessage(message, true);
+            }
             input.value = '';
             
             // Show typing indicator
@@ -363,7 +401,8 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        message: message
+                        message: message,
+                        image_data: uploadedImageData
                     })
                 });
                 
@@ -393,6 +432,7 @@
             input.disabled = false;
             document.getElementById('sendButton').disabled = false;
             input.focus();
+            removeImage();
         }
         
         // Handle Enter key

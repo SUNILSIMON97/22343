@@ -4,6 +4,7 @@ Handles all AI interactions with personality system
 """
 
 import os
+import time
 from openai import OpenAI
 import json
 
@@ -54,38 +55,103 @@ If someone listens with eyes closed, they must feel:
 "இவன் bot இல்ல… நம்ம ஊரு நண்பன்."
 """
 
-        # Slang definitions
+        # Enhanced slang definitions
         self.slang_rules = {
             'CHENNAI': {
-                'description': 'Fast, bold, energetic',
-                'words': 'Machi, Naina, Gethu, Bejaaru, Scene-u',
-                'style': 'Casual endings like "-ga". Quick and punchy.'
+                'style': 'Fast-paced, casual, friendly. Use English words naturally mixed in.',
+                'common_words': [
+                    'மச்சி (machi)', 'நைனா (naina)', 'கெத்து (gethu)', 'பீஜார் (bejaaru)',
+                    'சீன் (scene)', 'டென்ஷன் (tension)', 'சூப்பர் (super)', 'செம்ம (semma)',
+                    'கலக்கு (kalakku)', 'மாஸ் (mass)', 'லெவல் (level)'
+                ],
+                'sentence_patterns': [
+                    'என்ன {name} மச்சி?',
+                    'சூப்பரா இருக்கு!',
+                    'நைனா, கொஞ்சம் டென்ஷன் ஆகுது',
+                    'அடச்சீ! செம்ம சீன்டா இருக்கே!',
+                    'லெவல்லா இருக்கு மச்சி!'
+                ],
+                'avoid': ['formal Tamil', 'literary words', 'respectful suffixes like ங்கள்']
             },
             'KOVAI': {
-                'description': 'Very polite, calm',
-                'words': 'Sami, Nange, Vange, Ponge',
-                'style': 'Respectful "-u" endings. Gentle and musical.'
+                'style': 'Polite, calm, respectful. Slower pace, musical.',
+                'common_words': [
+                    'சாமி (sami)', 'நங்க (nange)', 'வாங்க (vange)', 'போங்க (ponge)',
+                    'இங்க (inga)', 'அங்க (anga)', 'பாருங்க (paarunga)'
+                ],
+                'sentence_patterns': [
+                    'என்ன சாமி?',
+                    'நல்லா இருக்கு சாமி',
+                    'வாங்க, பேசலாம்',
+                    'பாருங்க சாமி, இப்படி இருக்கு'
+                ],
+                'avoid': ['harsh words', 'fast slang', 'Chennai-style English mixing']
             },
             'MADURAI': {
-                'description': 'Raw, confident, authoritative',
-                'words': 'Anne, Annachi, Inguttu, Anguttu',
-                'style': 'Direct and bold. Strong presence.'
+                'style': 'Bold, confident, authoritative. Strong delivery.',
+                'common_words': [
+                    'அண்ணே (anne)', 'அண்ணாச்சி (annachi)', 'இங்குட்டு (inguttu)',
+                    'அங்குட்டு (anguttu)', 'எங்குட்டு (enguttu)', 'பாரு (paaru)',
+                    'சொல்லு (sollu)', 'கேளு (kelu)'
+                ],
+                'sentence_patterns': [
+                    'என்ன அண்ணே?',
+                    'இங்குட்டு வா',
+                    'சொல்லு அண்ணாச்சி',
+                    'பாரு, இப்படிதான் இருக்கும்'
+                ],
+                'avoid': ['polite forms', 'soft words', 'hesitant language']
             },
             'NELLAI': {
-                'description': 'Earthy, rhythmic',
-                'words': 'Ele, Le, Annanachi',
-                'style': 'Fast-paced, lively. Raw energy.'
+                'style': 'Earthy, rhythmic, fast. Raw and energetic.',
+                'common_words': [
+                    'ஏலே (ele)', 'லே (le)', 'அண்ணனாச்சி (annanachi)',
+                    'கேளுடா (keluda)', 'சொல்லுடா (solluda)', 'பாருடா (paaruda)'
+                ],
+                'sentence_patterns': [
+                    'ஏலே! என்ன விஷயம்?',
+                    'கேளுடா மச்சி',
+                    'செம்மயா இருக்கு லே!',
+                    'அண்ணனாச்சி, இப்படி இருக்கு'
+                ],
+                'avoid': ['formal speech', 'slow pacing', 'polite forms']
             },
             'EELAM': {
-                'description': 'Pure Jaffna / Vanni Tamil ONLY',
-                'words': 'Ennappa, Omom, Sughama, Paghidi',
-                'style': 'NO Tamil Nadu slang allowed. Distinct Jaffna flavor.'
+                'style': 'Pure Jaffna Tamil. Melodic, gentle, distinct.',
+                'common_words': [
+                    'என்னப்பா (ennappa)', 'ஓமோம் (omom)', 'சுகமா (sughama)',
+                    'பகிடி (paghidi)', 'கொஞ்சம் (konjam)', 'சரியோ (sariyo)'
+                ],
+                'sentence_patterns': [
+                    'என்னப்பா? சுகமா?',
+                    'ஓமோம், நல்லாத்தான் இருக்கு',
+                    'கொஞ்சம் சொல்லுங்கோ',
+                    'சரியோ அப்பா?'
+                ],
+                'avoid': ['Tamil Nadu slang', 'Chennai/Madurai words', 'aggressive tone']
             },
             'COMMON': {
-                'description': 'Neutral spoken Tamil',
-                'words': 'Friendly, balanced, clear',
-                'style': 'Standard conversational Tamil everyone understands.'
+                'style': 'Neutral, friendly, clear. Universally understood.',
+                'common_words': [
+                    'நண்பா (nanba)', 'எப்படி (eppadi)', 'சரி (sari)',
+                    'நல்லா (nalla)', 'நன்றி (nandri)'
+                ],
+                'sentence_patterns': [
+                    'எப்படி இருக்கீங்க?',
+                    'நல்லா இருக்கு',
+                    'சரி நண்பா',
+                    'புரிஞ்சுது'
+                ],
+                'avoid': ['region-specific slang', 'extreme informality']
             }
+        }
+
+        self.human_patterns = {
+            'fillers': ['ம்ம்ம்', 'அட', 'ஓ', 'அப்படியா', 'சரி சரி'],
+            'reactions': ['அடடா!', 'வாவ்!', 'சூப்பர்!', 'அய்யோ!', 'ஓஹோ!'],
+            'transitions': ['அதான்', 'அதுக்கு', 'அதுனால', 'அப்புறம்', 'முதல்ல'],
+            'confirmations': ['தெரிஞ்சுது', 'புரிஞ்சுது', 'ம்ம் சரி', 'ஓகே'],
+            'thinking': ['இப்ப பாக்கலாம்', 'ஒரு நிமிஷம்', 'யோசிக்கலாம்']
         }
         
         # Persona definitions
@@ -124,9 +190,10 @@ CURRENT CONFIGURATION:
 ======================
 
 SLANG: {slang}
-- Description: {slang_info['description']}
-- Key words to use: {slang_info['words']}
-- Speaking style: {slang_info['style']}
+- Style: {slang_info['style']}
+- Key words to use: {', '.join(slang_info['common_words'][:5])}
+- Example sentences: {', '.join(slang_info['sentence_patterns'][:3])}
+- Avoid: {', '.join(slang_info['avoid'])}
 
 CHARACTER: {persona}
 - Description: {persona_info['description']}
@@ -139,9 +206,12 @@ USER'S NAME: {user_name if user_name else 'Not provided yet'}
 CRITICAL RULES FOR THIS CONVERSATION:
 - Speak ONLY in {slang} slang style
 - Be EXACTLY {persona} in personality
-- Use {slang_info['words']} naturally
+- Use {', '.join(slang_info['common_words'][:5])} naturally
 - NEVER mix other slang words
 - Stay in character 100% of the time
+- Use fillers: {', '.join(self.human_patterns['fillers'][:3])}
+- React naturally: {', '.join(self.human_patterns['reactions'][:3])}
+- Think out loud sometimes: {', '.join(self.human_patterns['thinking'][:2])}
 
 Example opening based on current config:
 {self._get_example_opening(slang, persona, user_name)}
@@ -188,19 +258,20 @@ Example opening based on current config:
         return openers.get(key, f"வணக்கம் {user_name if user_name else 'நண்பரே'}!")
     
     def chat(self, user_message, slang='COMMON', persona='JALIANA', user_name='', conversation_history=None):
-        """Generate AI response based on user message and context"""
+        """Generate AI response based on user message and context (token-optimized)"""
         
         # Build system prompt with current configuration
         system_prompt = self.build_system_prompt(slang, persona, user_name)
+        system_prompt += "\n\nHARD LIMIT: Keep replies to 2-3 short sentences. Be brief unless the user asks for detail."
         
         # Prepare messages for OpenAI
         messages = [
             {"role": "system", "content": system_prompt}
         ]
         
-        # Add conversation history if available (last 10 messages)
+        # Add conversation history if available (last 3 messages to save tokens)
         if conversation_history:
-            for msg in conversation_history[-10:]:
+            for msg in conversation_history[-3:]:
                 messages.append({
                     "role": msg['role'],
                     "content": msg['content']
@@ -213,25 +284,72 @@ Example opening based on current config:
         })
         
         try:
-            # Call OpenAI API
-            response = self.client.chat.completions.create(
-                model=self.model,
-                messages=messages,
-                temperature=0.8,  # Higher for more creative/natural responses
-                max_tokens=500,   # Limit response length
-                presence_penalty=0.6,  # Encourage variety
-                frequency_penalty=0.3  # Reduce repetition
-            )
-            
-            # Extract response
-            ai_response = response.choices[0].message.content
-            
-            return ai_response
-            
-        except Exception as e:
-            print(f"OpenAI API Error: {e}")
+            # Call OpenAI API with light retry on transient errors
+            last_error = None
+            for attempt in range(3):
+                try:
+                    response = self.client.chat.completions.create(
+                        model=self.model,
+                        messages=messages,
+                        temperature=0.8,  # Higher for more creative/natural responses
+                        max_tokens=150,   # Limit response length for token savings
+                        presence_penalty=0.6,  # Encourage variety
+                        frequency_penalty=0.3  # Reduce repetition
+                    )
+                    ai_response = response.choices[0].message.content
+                    return ai_response
+                except Exception as e:
+                    last_error = e
+                    print(f"OpenAI API Error: {e}")
+                    time.sleep(1.5 * (attempt + 1))
+            raise last_error
+        except Exception:
             # Fallback response
             if 'JALIANA' in persona:
-                return f"மச்சி, சொரி டா... கொஞ்சம் technical issue. மறுபடியும் try பண்ணு! 😅"
+                return f"மச்சி, சாரி டா... கொஞ்சம் technical issue. மறுபடியும் try பண்ணு! 😅"
             else:
                 return "மன்னிக்கவும், technical issue உள்ளது. மீண்டும் முயற்சிக்கவும்."
+
+    def chat_with_image(self, user_message, image_data, slang='COMMON', persona='JALIANA', user_name=''):
+        """Generate AI response using image + text"""
+        system_prompt = self.build_system_prompt(slang, persona, user_name)
+        system_prompt += (
+            "\n\nUser uploaded an image. Analyze it carefully and respond in Tamil slang."
+            " If it's homework or a question, explain simply and helpfully."
+            " Keep responses short unless the user asks for detail."
+        )
+
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": user_message},
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/jpeg;base64,{image_data}"
+                        }
+                    }
+                ]
+            }
+        ]
+
+        try:
+            last_error = None
+            for attempt in range(3):
+                try:
+                    response = self.client.chat.completions.create(
+                        model="gpt-4o-mini",
+                        messages=messages,
+                        max_tokens=300,
+                        temperature=0.7
+                    )
+                    return response.choices[0].message.content
+                except Exception as e:
+                    last_error = e
+                    print(f"OpenAI Image Error: {e}")
+                    time.sleep(1.5 * (attempt + 1))
+            raise last_error
+        except Exception:
+            return "மச்சி, படம் படிக்க முடியல. இன்னொரு தடவை try பண்ணு 😅"

@@ -3,7 +3,7 @@ NANBAN AI - Tamil Conversational Companion
 Main Flask Application Server
 """
 
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify, session, make_response
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
@@ -85,6 +85,7 @@ def chat_endpoint():
     """Handle chat messages"""
     data = request.json
     user_message = data.get('message', '')
+    image_data = data.get('image_data')
     
     # Get user context
     user_id = session.get('user_id')
@@ -100,14 +101,23 @@ def chat_endpoint():
         # Get conversation history
         history = db.get_conversation_history(user_id) if user_id else []
         
-        # Generate AI response
-        ai_response = brain.chat(
-            user_message=user_message,
-            slang=slang,
-            persona=persona,
-            user_name=user_name,
-            conversation_history=history
-        )
+        # Generate AI response (image or text)
+        if image_data:
+            ai_response = brain.chat_with_image(
+                user_message=user_message or "இந்த படத்தில என்ன இருக்கு?",
+                image_data=image_data,
+                slang=slang,
+                persona=persona,
+                user_name=user_name
+            )
+        else:
+            ai_response = brain.chat(
+                user_message=user_message,
+                slang=slang,
+                persona=persona,
+                user_name=user_name,
+                conversation_history=history
+            )
         
         # Save conversation
         if user_id:
@@ -163,6 +173,11 @@ def get_stats():
 @app.errorhandler(404)
 def not_found(e):
     return render_template('404.html'), 404
+
+@app.route('/favicon.ico')
+def favicon():
+    # Avoid noisy 404s for favicon
+    return make_response('', 204)
 
 @app.errorhandler(500)
 def server_error(e):
